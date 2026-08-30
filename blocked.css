@@ -1,0 +1,206 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+:root {
+	--bg: #1d0d0d;
+	--card: #121212;
+	--border: #1c1c1c;
+	--border2: #242424;
+	--text: #e2e2e2;
+	--text2: #6a6a6a;
+	--text3: #3a3a3a;
+	--accent: #4f7eff;
+	--green: #3ecf76;
+	--red: #e05555;
+}
+
+body {
+	min-height: 100vh;
+	background: var(--bg);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family:
+		-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+	font-size: 13px;
+	color: var(--text);
+	line-height: 1.5;
+}
+
+.page {
+	width: 100%;
+	max-width: 520px;
+	padding: 24px 16px;
+}
+
+.card {
+	background: var(--card);
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+.card-top {
+	padding: 26px 26px 20px;
+	border-bottom: 1px solid var(--border);
+}
+
+.badge {
+	display: inline-block;
+	font-size: 9px;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	border-radius: 4px;
+	padding: 3px 8px;
+	margin-bottom: 12px;
+}
+.badge-blocked {
+	background: rgba(224, 85, 85, 0.1);
+	color: var(--red);
+	border: 1px solid rgba(224, 85, 85, 0.22);
+}
+.badge-done {
+	background: rgba(62, 207, 118, 0.09);
+	color: var(--green);
+	border: 1px solid rgba(62, 207, 118, 0.2);
+}
+
+h1 {
+	font-size: 17px;
+	font-weight: 600;
+	color: var(--text);
+	margin-bottom: 5px;
+}
+p {
+	font-size: 12px;
+	color: var(--text2);
+}
+
+.task-list {
+	list-style: none;
+}
+
+.task-item {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 14px 26px;
+	border-bottom: 1px solid var(--border);
+	transition: background 0.12s;
+}
+.task-item.clickable {
+	cursor: pointer;
+}
+.task-item.clickable:hover {
+	background: rgba(255, 255, 255, 0.022);
+}
+
+.check {
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	border: 1.5px solid var(--text3);
+	flex-shrink: 0;
+	position: relative;
+	transition: all 0.2s;
+}
+.check.done {
+	background: var(--green);
+	border-color: var(--green);
+}
+.check.done::after {
+	content: '';
+	position: absolute;
+	left: 4px;
+	top: 1.5px;
+	width: 4px;
+	height: 8px;
+	border: 1.5px solid #fff;
+	border-top: none;
+	border-left: none;
+	transform: rotate(45deg);
+}
+
+.task-info {
+	flex: 1;
+	min-width: 0;
+}
+
+.task-name {
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--text);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.task-name.done {
+	color: var(--text3);
+	text-decoration: line-through;
+}
+
+.task-meta {
+	font-size: 11px;
+	color: var(--text3);
+	margin-top: 2px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.task-arrow {
+	font-size: 14px;
+	color: var(--accent);
+	opacity: 0.65;
+	flex-shrink: 0;
+}
+
+.card-footer {
+	padding: 14px 26px;
+}
+
+.progress-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.progress-track {
+	flex: 1;
+	height: 2px;
+	background: var(--border2);
+	border-radius: 2px;
+	overflow: hidden;
+}
+
+.progress-fill {
+	height: 100%;
+	width: 0%;
+	background: var(--accent);
+	border-radius: 2px;
+	transition:
+		width 0.4s ease,
+		background 0.4s ease;
+}
+.progress-fill.all-done {
+	background: var(--green);
+}
+
+.progress-label {
+	font-size: 11px;
+	color: var(--text3);
+	white-space: nowrap;
+}
+
+.empty {
+	padding: 32px 26px;
+	text-align: center;
+	color: var(--text3);
+	font-size: 13px;
+}

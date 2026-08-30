@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Complit",
+  "version": "2.0",
+  "description": "Block browsing until your tasks are complete.",
+  "permissions": ["tabs", "storage", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "chrome_url_overrides": {
+    "newtab": "tasks.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Open Complit"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["tasks.html", "tasks.css", "tasks.js",
+                    "blocked.html", "blocked.js", "blocked.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
