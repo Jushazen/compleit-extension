@@ -1,176 +1,136 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Complit</title>
-		<link rel="stylesheet" href="tasks.css" />
-	</head>
-	<body>
-		<div class="page">
-			<header class="page-header">
-				<h1>Complit</h1>
-				<span id="stats" class="stats"></span>
-			</header>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Guardian</title>
+  <link rel="stylesheet" href="tasks.css">
+</head>
+<body>
+<div class="app">
 
-			<!-- ── Add task ─────────────────────────────────────── -->
-			<div class="card">
-				<div class="card-title">New Task</div>
-				<div class="fields" id="task-form">
-					<div class="field">
-						<label class="field-label">Task name</label>
-						<input
-							type="text"
-							id="f-name"
-							class="input"
-							placeholder="e.g. Solve a LeetCode problem"
-						/>
-					</div>
+  <header class="topbar">
+    <span class="app-name">Task Guardian</span>
+    <span id="stats" class="topbar-stats"></span>
+  </header>
 
-					<div class="field">
-						<label class="field-label">URL</label>
-						<input
-							type="text"
-							id="f-url"
-							class="input"
-							placeholder="e.g. leetcode.com"
-						/>
-					</div>
+  <div class="main">
 
-					<div class="two-col">
-						<div class="field">
-							<label class="field-label"
-								>Time limit (minutes)</label
-							>
-							<input
-								type="number"
-								id="f-dur"
-								class="input"
-								placeholder="30"
-								min="1"
-								max="480"
-							/>
-						</div>
-						<div class="field">
-							<label class="field-label">Scheduled date</label>
-							<input type="date" id="f-date" class="input" />
-						</div>
-					</div>
+    <!-- LEFT: form -->
+    <aside class="left-col">
+      <div class="card">
+        <div class="card-label">New Task</div>
+        <div class="form-fields">
+          <div class="field">
+            <label class="flabel">Task name</label>
+            <input id="f-name" type="text" class="input" placeholder="e.g. Solve a LeetCode problem">
+          </div>
+          <div class="field">
+            <label class="flabel">URL</label>
+            <input id="f-url" type="text" class="input" placeholder="e.g. leetcode.com">
+          </div>
+          <div class="two-col">
+            <div class="field">
+              <label class="flabel">Time <span class="req">*</span></label>
+              <input id="f-time" type="time" class="input" value="09:00">
+            </div>
+            <div class="field">
+              <label class="flabel">Duration (min)</label>
+              <input id="f-dur" type="number" class="input" placeholder="30" min="1" max="480">
+            </div>
+          </div>
+          <div class="field">
+            <label class="flabel">Date <span class="opt">(optional)</span></label>
+            <input id="f-date" type="date" class="input">
+          </div>
+          <div class="field">
+            <label class="flabel">Repeat</label>
+            <div class="repeat-grid" id="repeat-grid">
+              <label class="repeat-pill selected" data-val="off">
+                <input type="radio" name="repeat" value="off" checked> Off
+              </label>
+              <label class="repeat-pill" data-val="daily">
+                <input type="radio" name="repeat" value="daily"> No limit
+              </label>
+              <label class="repeat-pill" data-val="weekly">
+                <input type="radio" name="repeat" value="weekly"> Weekly
+              </label>
+              <label class="repeat-pill" data-val="custom">
+                <input type="radio" name="repeat" value="custom"> Custom
+              </label>
+            </div>
+            <div id="custom-days" class="days-row hidden">
+              <button type="button" class="day-pill" data-day="1">Mon</button>
+              <button type="button" class="day-pill" data-day="2">Tue</button>
+              <button type="button" class="day-pill" data-day="3">Wed</button>
+              <button type="button" class="day-pill" data-day="4">Thu</button>
+              <button type="button" class="day-pill" data-day="5">Fri</button>
+              <button type="button" class="day-pill" data-day="6">Sat</button>
+              <button type="button" class="day-pill" data-day="0">Sun</button>
+            </div>
+          </div>
+          <div id="form-error" class="form-error"></div>
+          <button id="btn-add" class="btn btn-primary">Add Task</button>
+        </div>
+      </div>
+    </aside>
 
-					<div class="field">
-						<label class="field-label">Repeat</label>
-						<div class="repeat-grid" id="repeat-grid">
-							<label
-								class="repeat-option selected"
-								data-val="off"
-							>
-								<input
-									type="radio"
-									name="repeat"
-									value="off"
-									checked
-								/>
-								Off
-							</label>
-							<label class="repeat-option" data-val="daily">
-								<input
-									type="radio"
-									name="repeat"
-									value="daily"
-								/>
-								No limit
-							</label>
-							<label class="repeat-option" data-val="weekly">
-								<input
-									type="radio"
-									name="repeat"
-									value="weekly"
-								/>
-								Weekly
-							</label>
-							<label class="repeat-option" data-val="custom">
-								<input
-									type="radio"
-									name="repeat"
-									value="custom"
-								/>
-								Custom days
-							</label>
-						</div>
-						<div id="custom-days" class="days-row hidden">
-							<button type="button" class="day-pill" data-day="1">
-								Mon
-							</button>
-							<button type="button" class="day-pill" data-day="2">
-								Tue
-							</button>
-							<button type="button" class="day-pill" data-day="3">
-								Wed
-							</button>
-							<button type="button" class="day-pill" data-day="4">
-								Thu
-							</button>
-							<button type="button" class="day-pill" data-day="5">
-								Fri
-							</button>
-							<button type="button" class="day-pill" data-day="6">
-								Sat
-							</button>
-							<button type="button" class="day-pill" data-day="0">
-								Sun
-							</button>
-						</div>
-					</div>
+    <!-- RIGHT: today + calendar -->
+    <div class="right-col">
 
-					<div id="form-error" class="form-error"></div>
-					<button id="btn-add" class="btn btn-primary">
-						Add Task
-					</button>
-				</div>
-			</div>
+      <!-- Row 1: today's tasks (1/3) -->
+      <div class="card today-card">
+        <div class="today-header">
+          <span class="card-label" style="margin-bottom:0">Today</span>
+          <button id="btn-clear-done" class="btn-link">Clear completed</button>
+        </div>
+        <ul id="today-list" class="today-list"></ul>
+      </div>
 
-			<!-- ── Task list ────────────────────────────────────── -->
-			<div class="card">
-				<div class="card-title">Tasks</div>
-				<ul id="task-list" class="task-list"></ul>
-			</div>
-		</div>
-		<!-- .page -->
+      <!-- Row 2: weekly calendar (2/3) -->
+      <div class="card cal-card">
+        <div class="cal-head-row">
+          <div class="cal-gutter"></div>
+          <div id="cal-day-heads" class="cal-day-heads"></div>
+        </div>
+        <div class="cal-body" id="cal-body">
+          <div class="cal-time-col" id="cal-time-col"></div>
+          <div class="cal-days-grid" id="cal-days-grid"></div>
+        </div>
+      </div>
 
-		<!-- ── Delete challenge modal ─────────────────────────── -->
-		<div id="delete-modal" class="modal-overlay hidden">
-			<div class="modal">
-				<div class="modal-header">
-					<div class="modal-title">Confirm deletion</div>
-					<p class="modal-sub">
-						To permanently remove this task, type the 120 characters
-						below exactly as shown.
-					</p>
-				</div>
-				<div class="challenge-display" id="challenge-display"></div>
-				<div class="challenge-progress" id="challenge-progress">
-					<div class="challenge-fill" id="challenge-fill"></div>
-				</div>
-				<input
-					type="text"
-					id="challenge-input"
-					class="input challenge-input"
-					placeholder="Type here..."
-					autocomplete="off"
-					spellcheck="false"
-				/>
-				<div id="challenge-status" class="challenge-status"></div>
-				<div class="modal-actions">
-					<button id="modal-cancel" class="btn btn-ghost">
-						Cancel
-					</button>
-					<button id="modal-confirm" class="btn btn-danger" disabled>
-						Delete Task
-					</button>
-				</div>
-			</div>
-		</div>
+    </div>
+  </div>
+</div>
 
-		<script src="tasks.js"></script>
-	</body>
+<!-- Delete modal -->
+<div id="delete-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <div class="modal-title">Confirm deletion</div>
+    <p class="modal-sub">Type the 120 characters below exactly. Copy-paste is disabled.</p>
+    <div class="challenge-display" id="challenge-display"></div>
+    <div class="chal-track"><div class="chal-fill" id="chal-fill"></div></div>
+    <input id="challenge-input" type="text" class="input mono-input"
+           placeholder="Type here…" autocomplete="off" spellcheck="false">
+    <div id="challenge-msg" class="challenge-msg"></div>
+    <div class="modal-actions">
+      <button id="modal-cancel" class="btn btn-ghost">Cancel</button>
+      <button id="modal-confirm" class="btn btn-danger" disabled>Delete Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- Overlap group modal -->
+<div id="group-modal" class="modal-overlay hidden">
+  <div class="modal modal-sm">
+    <div class="modal-title">Multiple tasks at this time</div>
+    <div id="group-list" class="group-list"></div>
+    <div class="modal-actions">
+      <button id="group-close" class="btn btn-ghost">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="tasks.js"></script>
+</body>
 </html>
