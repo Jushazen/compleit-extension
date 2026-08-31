@@ -4,6 +4,12 @@
 
 	// ── Shared helpers ──────────────────────────────────────────────────────────
 
+	function timeToMins(t) {
+		if (!t) return 0;
+		const [h, m] = t.split(':').map(Number);
+		return h * 60 + m;
+	}
+
 	function getToday() {
 		const d = new Date();
 		return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -172,7 +178,7 @@
 	panel.style.pointerEvents = 'auto';
 	panel.innerHTML = `
     <div class="hdr" id="tg-hdr">
-      <span class="hdr-label">Compleit</span>
+      <span class="hdr-label">Task Guardian</span>
       <button class="min-btn" id="tg-min">&#x2014;</button>
     </div>
     <div class="body" id="tg-body">
@@ -461,8 +467,13 @@
 			repeatRow.appendChild(pill);
 		}
 
+		// Duration comes from the time window — no separate duration field
+		const durationMins = Math.max(
+			1,
+			timeToMins(task.endTime) - timeToMins(task.startTime),
+		);
 		const saved = timerStates[task.id];
-		remaining = saved ? Math.max(0, saved.remaining) : task.duration * 60;
+		remaining = saved ? Math.max(0, saved.remaining) : durationMins * 60;
 		digitsEl.textContent = fmt(remaining);
 
 		if (remaining <= 0) {

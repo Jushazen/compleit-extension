@@ -31,6 +31,30 @@ function taskDoneToday(task) {
 	return task.lastCompletedDate === today;
 }
 
+function pad(n) {
+	return String(n).padStart(2, '0');
+}
+
+function fmtTime(timeStr) {
+	if (!timeStr) return '';
+	const [h, m] = timeStr.split(':').map(Number);
+	const ap = h >= 12 ? 'PM' : 'AM';
+	const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+	return `${h12}:${pad(m)} ${ap}`;
+}
+
+function fmtRange(startTime, endTime) {
+	if (!startTime || !endTime) return '';
+	const [sh, sm] = startTime.split(':').map(Number);
+	const [eh, em] = endTime.split(':').map(Number);
+	const sAP = sh >= 12 ? 'PM' : 'AM';
+	const eAP = eh >= 12 ? 'PM' : 'AM';
+	const sh12 = sh === 0 ? 12 : sh > 12 ? sh - 12 : sh;
+	const eh12 = eh === 0 ? 12 : eh > 12 ? eh - 12 : eh;
+	if (sAP === eAP) return `${sh12}:${pad(sm)}–${eh12}:${pad(em)} ${eAP}`;
+	return `${sh12}:${pad(sm)} ${sAP}–${eh12}:${pad(em)} ${eAP}`;
+}
+
 function esc(s) {
 	return String(s)
 		.replace(/&/g, '&amp;')
@@ -108,7 +132,7 @@ function render(allTasks) {
       <div class="check${done ? ' done' : ''}"></div>
       <div class="task-info">
         <div class="task-name${done ? ' done' : ''}">${esc(task.name)}</div>
-        <div class="task-meta">${esc(task.url)} &middot; ${task.duration} min</div>
+        <div class="task-meta">${esc(task.url)} &middot; ${fmtRange(task.startTime, task.endTime)}</div>
       </div>
       ${!done ? '<span class="task-arrow">&#8594;</span>' : ''}
     `;
