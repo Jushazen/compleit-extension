@@ -172,7 +172,7 @@
 	panel.style.pointerEvents = 'auto';
 	panel.innerHTML = `
     <div class="hdr" id="tg-hdr">
-      <span class="hdr-label">Complit</span>
+      <span class="hdr-label">Compleit</span>
       <button class="min-btn" id="tg-min">&#x2014;</button>
     </div>
     <div class="body" id="tg-body">

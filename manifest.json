@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Complit",
+  "name": "Compleit",
   "version": "2.0",
   "description": "Block browsing until your tasks are complete.",
   "permissions": ["tabs", "storage", "scripting"],
@@ -12,7 +12,7 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Open Complit"
+    "default_title": "Open Compleit"
   },
   "web_accessible_resources": [
     {
