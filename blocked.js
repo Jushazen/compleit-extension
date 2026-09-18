@@ -1,60 +1,22 @@
 'use strict';
-
-// ── Shared helpers ────────────────────────────────────────────────────────────
-
-function getToday() {
-	const d = new Date();
-	return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-function taskIsActiveToday(task) {
-	const today = getToday();
-	if (task.scheduledDate && task.scheduledDate > today) return false;
-	const type = task.repeat?.type || 'off';
-	if (type === 'off') return !task.completed;
-	if (task.lastCompletedDate === today) return false;
-	if (type === 'daily') return true;
-	const todayDay = new Date().getDay();
-	if (type === 'weekly') {
-		return (
-			new Date((task.scheduledDate || today) + 'T12:00:00').getDay() ===
-			todayDay
-		);
-	}
-	if (type === 'custom') return (task.repeat.days || []).includes(todayDay);
-	return false;
-}
-
-function taskDoneToday(task) {
-	const today = getToday();
-	if (task.repeat?.type === 'off') return task.completed;
-	return task.lastCompletedDate === today;
-}
-
 function pad(n) {
 	return String(n).padStart(2, '0');
 }
-
-function fmtTime(timeStr) {
-	if (!timeStr) return '';
-	const [h, m] = timeStr.split(':').map(Number);
-	const ap = h >= 12 ? 'PM' : 'AM';
-	const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
-	return `${h12}:${pad(m)} ${ap}`;
+function getToday() {
+	const d = new Date();
+	return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
-
-function fmtRange(startTime, endTime) {
-	if (!startTime || !endTime) return '';
-	const [sh, sm] = startTime.split(':').map(Number);
-	const [eh, em] = endTime.split(':').map(Number);
-	const sAP = sh >= 12 ? 'PM' : 'AM';
-	const eAP = eh >= 12 ? 'PM' : 'AM';
-	const sh12 = sh === 0 ? 12 : sh > 12 ? sh - 12 : sh;
-	const eh12 = eh === 0 ? 12 : eh > 12 ? eh - 12 : eh;
+function fmtRange(s, e) {
+	if (!s || !e) return '';
+	const [sh, sm] = s.split(':').map(Number),
+		[eh, em] = e.split(':').map(Number);
+	const sAP = sh >= 12 ? 'PM' : 'AM',
+		eAP = eh >= 12 ? 'PM' : 'AM',
+		sh12 = sh === 0 ? 12 : sh > 12 ? sh - 12 : sh,
+		eh12 = eh === 0 ? 12 : eh > 12 ? eh - 12 : eh;
 	if (sAP === eAP) return `${sh12}:${pad(sm)}–${eh12}:${pad(em)} ${eAP}`;
 	return `${sh12}:${pad(sm)} ${sAP}–${eh12}:${pad(em)} ${eAP}`;
 }
-
 function esc(s) {
 	return String(s)
 		.replace(/&/g, '&amp;')
@@ -62,8 +24,31 @@ function esc(s) {
 		.replace(/>/g, '&gt;')
 		.replace(/"/g, '&quot;');
 }
+function taskIsActiveToday(t) {
+	const today = getToday();
+	if (t.scheduledDate && t.scheduledDate > today) return false;
+	const type = t.repeat?.type || 'off';
+	if (type === 'off') return !t.completed;
+	if (t.lastCompletedDate === today) return false;
+	if (type === 'daily') return true;
+	const dd = new Date().getDay();
+	if (type === 'weekly')
+		return (
+			new Date((t.scheduledDate || today) + 'T12:00:00').getDay() === dd
+		);
+	if (type === 'custom') return (t.repeat.days || []).includes(dd);
+	return false;
+}
+function taskDoneToday(t) {
+	const today = getToday();
+	return t.repeat?.type === 'off'
+		? t.completed
+		: t.lastCompletedDate === today;
+}
 
-// ── Render ────────────────────────────────────────────────────────────────────
+// Check if this is a blacklist block
+const params = new URLSearchParams(window.location.search);
+const IS_BLACKLIST = params.get('reason') === 'blacklist';
 
 async function loadAndRender() {
 	const { tasks = [] } = await chrome.storage.local.get('tasks');
@@ -71,28 +56,36 @@ async function loadAndRender() {
 }
 
 function render(allTasks) {
-	// Only show tasks that are due today (active or done)
+	const today = getToday();
+	const badge = document.getElementById('badge'),
+		title = document.getElementById('title'),
+		sub = document.getElementById('subtitle');
+	const fill = document.getElementById('progress-fill'),
+		label = document.getElementById('progress-label'),
+		list = document.getElementById('task-list');
+
+	if (IS_BLACKLIST) {
+		badge.textContent = 'Blacklisted';
+		badge.className = 'badge badge-blocked';
+		title.textContent = 'This URL is blocked';
+		sub.textContent =
+			'You have blacklisted this address. Remove it in Task Guardian to access it.';
+		list.innerHTML =
+			'<div class="empty">Open a new tab to manage your blacklist.</div>';
+		fill.style.width = '100%';
+		fill.classList.add('all-done');
+		label.textContent = '';
+		return;
+	}
+
 	const todayTasks = allTasks.filter((t) => {
-		const today = getToday();
 		if (t.scheduledDate && t.scheduledDate > today) return false;
-		// Include if active today OR if it was supposed to be done today (repeat type check)
-		if (taskIsActiveToday(t)) return true;
-		// Also show tasks done today so user can see progress
-		return taskDoneToday(t);
+		return taskIsActiveToday(t) || taskDoneToday(t);
 	});
+	const total = todayTasks.length,
+		done = todayTasks.filter(taskDoneToday).length,
+		allDone = total > 0 && done === total;
 
-	const list = document.getElementById('task-list');
-	const badge = document.getElementById('badge');
-	const title = document.getElementById('title');
-	const sub = document.getElementById('subtitle');
-	const fill = document.getElementById('progress-fill');
-	const label = document.getElementById('progress-label');
-
-	const total = todayTasks.length;
-	const done = todayTasks.filter(taskDoneToday).length;
-	const allDone = total > 0 && done === total;
-
-	// Header
 	if (allDone) {
 		badge.textContent = 'Complete';
 		badge.className = 'badge badge-done';
@@ -106,55 +99,56 @@ function render(allTasks) {
 			'Browsing is locked. Click a pending task below to work on it.';
 	}
 
-	// Progress
 	const pct = total ? (done / total) * 100 : 0;
 	fill.style.width = pct + '%';
 	fill.classList.toggle('all-done', allDone);
 	label.textContent = `${done} / ${total}`;
 
-	// List
 	if (!todayTasks.length) {
 		list.innerHTML =
 			'<div class="empty">Nothing scheduled for today.</div>';
 		return;
 	}
-
 	list.innerHTML = '';
 	todayTasks.forEach((task) => {
-		const done = taskDoneToday(task);
-		const href = /^https?:\/\//.test(task.url)
-			? task.url
-			: 'https://' + task.url;
-
+		const isDone = taskDoneToday(task);
+		const urls = task.urls || (task.url ? [task.url] : []);
 		const li = document.createElement('li');
-		li.className = `task-item${!done ? ' clickable' : ''}`;
-		li.innerHTML = `
-      <div class="check${done ? ' done' : ''}"></div>
-      <div class="task-info">
-        <div class="task-name${done ? ' done' : ''}">${esc(task.name)}</div>
-        <div class="task-meta">${esc(task.url)} &middot; ${fmtRange(task.startTime, task.endTime)}</div>
-      </div>
-      ${!done ? '<span class="task-arrow">&#8594;</span>' : ''}
-    `;
-
-		if (!done) {
-			li.addEventListener('click', () =>
-				chrome.tabs.create({ url: href }),
-			);
-		}
-
+		li.className = `task-item${!isDone ? ' clickable' : ''}`;
+		li.innerHTML = `<div class="check${isDone ? ' done' : ''}"></div><div class="task-info"><div class="task-name${isDone ? ' done' : ''}">${esc(task.name)}</div><div class="task-meta">${urls.map((u) => esc(u)).join(', ')} &middot; ${fmtRange(task.startTime, task.endTime)}</div></div>${!isDone ? '<span class="task-arrow">&#8594;</span>' : ''}`;
+		if (!isDone)
+			li.addEventListener('click', () => {
+				if (!urls.length) {
+					chrome.tabs.create({
+						url:
+							chrome.runtime.getURL('workspace.html') +
+							'?taskId=' +
+							encodeURIComponent(task.id),
+					});
+					return;
+				}
+				if (urls.length === 1) {
+					chrome.tabs.create({
+						url: /^https?:\/\//.test(urls[0])
+							? urls[0]
+							: 'https://' + urls[0],
+					});
+				} else {
+					urls.forEach((u) =>
+						chrome.tabs.create({
+							url: /^https?:\/\//.test(u) ? u : 'https://' + u,
+						}),
+					);
+				}
+			});
 		list.appendChild(li);
 	});
 }
 
-// ── Live updates ──────────────────────────────────────────────────────────────
-
 chrome.runtime.onMessage.addListener((msg) => {
 	if (msg.action === 'TASKS_UPDATED') loadAndRender();
 });
-
 chrome.storage.onChanged.addListener((changes) => {
 	if (changes.tasks) render(changes.tasks.newValue || []);
 });
-
 loadAndRender();

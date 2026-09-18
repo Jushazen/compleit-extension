@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workspace — Compleit</title>
+  <link rel="stylesheet" href="workspace.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="ws-header">
+    <a href="tasks.html" class="back-link">&#8592; Compleit</a>
+    <div class="ws-header-center">
+      <h1 id="ws-title">Loading...</h1>
+      <span id="ws-timerange" class="ws-timerange"></span>
+    </div>
+    <span id="ws-diff-badge" class="diff-badge"></span>
+  </header>
+
+  <div class="ws-body">
+
+    <!-- Notes -->
+    <div class="ws-notes-col">
+      <textarea id="ws-notes" class="ws-notes"
+        placeholder="Use this space to work on your task. Notes are saved automatically."></textarea>
+      <div class="ws-notes-footer">
+        <span id="ws-save-status" class="save-status"></span>
+      </div>
+    </div>
+
+    <!-- Timer + completion -->
+    <aside class="ws-side">
+
+      <div class="ws-pomo">
+        <div class="ws-pomo-header">
+          <span class="ws-phase" id="ws-phase">Work</span>
+          <span class="ws-pomo-cnt" id="ws-cnt"></span>
+        </div>
+        <div class="ws-time" id="ws-time">25:00</div>
+        <div class="ws-dots" id="ws-dots"></div>
+        <div class="ws-ctrl">
+          <button class="ws-ctrl-sm" id="ws-reset" title="Reset">&#8635;</button>
+          <button class="ws-ctrl-main" id="ws-start">Start</button>
+          <button class="ws-ctrl-sm" id="ws-skip"  title="Skip">&#8677;</button>
+        </div>
+      </div>
+
+      <div class="ws-sep"></div>
+
+      <div class="ws-comp">
+        <!-- Medium: requirements -->
+        <div id="ws-req" style="display:none">
+          <div class="ws-req-row"><div class="ws-dot" id="ws-pdot"></div><span class="ws-req-lbl" id="ws-plbl">Pomodoro: 0 / 1 session</span></div>
+          <div class="ws-req-row"><div class="ws-dot" id="ws-adot"></div><span class="ws-req-lbl" id="ws-albl">Active: 0 / 0 min</span></div>
+        </div>
+        <!-- Hard: time gate -->
+        <div id="ws-hard" style="display:none">
+          <div class="ws-hard-time" id="ws-htime">--:--</div>
+          <div class="ws-hard-sub"  id="ws-hsub">until task window ends</div>
+        </div>
+        <!-- Mark done -->
+        <button class="ws-mark-btn" id="ws-mark">Mark as done</button>
+        <!-- Easy: countdown -->
+        <div class="ws-cdown" id="ws-cdown" style="display:none">
+          <span class="ws-cdown-lbl" id="ws-cdlbl">Confirming in 1:30</span>
+          <button class="ws-cdown-cancel" id="ws-cancel">Cancel</button>
+        </div>
+        <!-- Medium: reflection -->
+        <div id="ws-reflect" style="display:none">
+          <div class="ws-reflect-hdr" id="ws-rlbl">What did you accomplish?</div>
+          <textarea class="ws-reflect-ta" id="ws-rta" placeholder="At least 30 characters…" rows="4"></textarea>
+          <div class="ws-reflect-foot">
+            <span class="ws-reflect-cnt" id="ws-rcnt">0 / 30</span>
+            <button class="ws-reflect-sub" id="ws-rsub" disabled>Submit</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-sep"></div>
+
+      <details class="ws-pset">
+        <summary class="ws-pset-sum">Timer settings</summary>
+        <div class="ws-pset-grid">
+          <label>Work</label>        <input type="number" id="ws-pw" class="ws-pset-inp" min="1" max="120" value="25"> <span>min</span>
+          <label>Short break</label> <input type="number" id="ws-ps" class="ws-pset-inp" min="1" max="60"  value="5">  <span>min</span>
+          <label>Long break</label>  <input type="number" id="ws-pl" class="ws-pset-inp" min="1" max="120" value="15"> <span>min</span>
+        </div>
+        <button class="ws-pset-save" id="ws-psave">Save</button>
+      </details>
+
+    </aside>
+  </div>
+
+  <!-- Done overlay -->
+  <div id="ws-done" class="ws-done-overlay" style="display:none">
+    <div class="ws-done-card">
+      <div class="ws-done-title" id="ws-done-title">Task complete</div>
+      <div class="ws-done-sub"   id="ws-done-sub">Marked as complete</div>
+      <a href="tasks.html" class="ws-done-link">Back to Compleit</a>
+    </div>
+  </div>
+
+</div>
+<script src="workspace.js"></script>
+</body>
+</html>

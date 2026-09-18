@@ -1,136 +1,415 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Guardian</title>
-  <link rel="stylesheet" href="tasks.css">
-</head>
-<body>
-<div class="app">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Compleit</title>
+		<link rel="stylesheet" href="tasks.css" />
+	</head>
+	<body>
+		<div class="app">
+			<header class="topbar">
+				<span class="app-name">Compleit</span>
+				<div class="topbar-right">
+					<span id="stats" class="topbar-stats"></span>
+					<div class="gear-wrap">
+						<button
+							id="btn-gear"
+							class="icon-btn"
+							title="Settings"
+							aria-label="Settings"
+						>
+							<svg
+								width="15"
+								height="15"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<circle cx="12" cy="12" r="3" />
+								<path
+									d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06
+                     a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09
+                     A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83
+                     l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09
+                     A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83
+                     l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09
+                     a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83
+                     l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09
+                     a1.65 1.65 0 0 0-1.51 1z"
+								/>
+							</svg>
+						</button>
+						<div
+							id="settings-dropdown"
+							class="settings-dropdown hidden"
+						>
+							<div class="setting-row">
+								<span class="setting-label">Theme</span>
+								<div class="toggle-group" id="theme-group">
+									<button
+										class="tog-btn active"
+										data-val="dark"
+									>
+										Dark
+									</button>
+									<button class="tog-btn" data-val="light">
+										Light
+									</button>
+								</div>
+							</div>
+							<div class="setting-row">
+								<span class="setting-label">Heatmap</span>
+								<div class="palette-group" id="palette-group">
+									<button
+										class="pal-btn active"
+										data-pal="green"
+										title="Green"
+										style="
+											background: linear-gradient(
+												90deg,
+												#0e4429,
+												#39d353
+											);
+										"
+									></button>
+									<button
+										class="pal-btn"
+										data-pal="blue"
+										title="Blue"
+										style="
+											background: linear-gradient(
+												90deg,
+												#0d2436,
+												#36b3f5
+											);
+										"
+									></button>
+									<button
+										class="pal-btn"
+										data-pal="orange"
+										title="Orange"
+										style="
+											background: linear-gradient(
+												90deg,
+												#3d1c00,
+												#ff8c00
+											);
+										"
+									></button>
+									<button
+										class="pal-btn"
+										data-pal="purple"
+										title="Purple"
+										style="
+											background: linear-gradient(
+												90deg,
+												#1e0a36,
+												#c39bd3
+											);
+										"
+									></button>
+								</div>
+							</div>
+							<div class="setting-row">
+								<span class="setting-label">Difficulty</span>
+								<div class="toggle-group" id="difficulty-group">
+									<button class="tog-btn" data-val="easy">
+										Easy
+									</button>
+									<button
+										class="tog-btn active"
+										data-val="medium"
+									>
+										Medium
+									</button>
+									<button class="tog-btn" data-val="hard">
+										Hard
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</header>
 
-  <header class="topbar">
-    <span class="app-name">Task Guardian</span>
-    <span id="stats" class="topbar-stats"></span>
-  </header>
+			<div class="main">
+				<!-- LEFT col -->
+				<aside class="left-col">
+					<details class="card" open>
+						<summary class="card-summary">
+							<span class="card-label">New Task</span
+							><span class="summary-icon">+</span>
+						</summary>
+						<div class="form-fields">
+							<div class="field">
+								<label class="flabel">Task name</label>
+								<input
+									id="f-name"
+									type="text"
+									class="input"
+									placeholder="e.g. Solve a LeetCode problem"
+								/>
+							</div>
+							<div class="field">
+								<label class="flabel"
+									>URLs <span class="req">*</span></label
+								>
+								<div id="url-inputs" class="url-inputs"></div>
+								<button
+									type="button"
+									id="btn-add-url"
+									class="btn-link-sm"
+								>
+									+ Add URL
+								</button>
+							</div>
+							<div class="two-col">
+								<div class="field">
+									<label class="flabel"
+										>Start <span class="req">*</span></label
+									>
+									<input
+										id="f-start"
+										type="time"
+										class="input"
+										value="09:00"
+									/>
+								</div>
+								<div class="field">
+									<label class="flabel"
+										>End <span class="req">*</span></label
+									>
+									<input
+										id="f-end"
+										type="time"
+										class="input"
+										value="10:00"
+									/>
+								</div>
+							</div>
+							<div class="field">
+								<label class="flabel"
+									>Date
+									<span class="opt">(optional)</span></label
+								>
+								<input id="f-date" type="date" class="input" />
+							</div>
+							<div class="field">
+								<label class="flabel">Repeat</label>
+								<div class="repeat-grid">
+									<label
+										class="repeat-pill selected"
+										data-val="off"
+										><input
+											type="radio"
+											name="repeat"
+											value="off"
+											checked
+										/>
+										Off</label
+									>
+									<label class="repeat-pill" data-val="daily"
+										><input
+											type="radio"
+											name="repeat"
+											value="daily"
+										/>
+										No limit</label
+									>
+									<label class="repeat-pill" data-val="weekly"
+										><input
+											type="radio"
+											name="repeat"
+											value="weekly"
+										/>
+										Weekly</label
+									>
+									<label class="repeat-pill" data-val="custom"
+										><input
+											type="radio"
+											name="repeat"
+											value="custom"
+										/>
+										Custom</label
+									>
+								</div>
+								<div id="custom-days" class="days-row hidden">
+									<button
+										type="button"
+										class="day-pill"
+										data-day="1"
+									>
+										Mon
+									</button>
+									<button
+										type="button"
+										class="day-pill"
+										data-day="2"
+									>
+										Tue
+									</button>
+									<button
+										type="button"
+										class="day-pill"
+										data-day="3"
+									>
+										Wed
+									</button>
+									<button
+										type="button"
+										class="day-pill"
+										data-day="4"
+									>
+										Thu
+									</button>
+									<button
+										type="button"
+										class="day-pill"
+										data-day="5"
+									>
+										Fri
+									</button>
+									<button
+										type="button"
+										class="day-pill"
+										data-day="6"
+									>
+										Sat
+									</button>
+									<button
+										type="button"
+										class="day-pill"
+										data-day="0"
+									>
+										Sun
+									</button>
+								</div>
+							</div>
+							<div id="form-error" class="form-error"></div>
+							<button id="btn-add" class="btn btn-primary">
+								Add Task
+							</button>
+						</div>
+					</details>
 
-  <div class="main">
+					<details class="card" open>
+						<summary class="card-summary">
+							<span class="card-label">Activity</span
+							><span class="summary-icon">+</span>
+						</summary>
+						<div id="heatmap-wrap" class="heatmap-wrap"></div>
+					</details>
 
-    <!-- LEFT: form -->
-    <aside class="left-col">
-      <div class="card">
-        <div class="card-label">New Task</div>
-        <div class="form-fields">
-          <div class="field">
-            <label class="flabel">Task name</label>
-            <input id="f-name" type="text" class="input" placeholder="e.g. Solve a LeetCode problem">
-          </div>
-          <div class="field">
-            <label class="flabel">URL</label>
-            <input id="f-url" type="text" class="input" placeholder="e.g. leetcode.com">
-          </div>
-          <div class="two-col">
-            <div class="field">
-              <label class="flabel">Start time <span class="req">*</span></label>
-              <input id="f-start" type="time" class="input" value="09:00">
-            </div>
-            <div class="field">
-              <label class="flabel">End time <span class="req">*</span></label>
-              <input id="f-end" type="time" class="input" value="10:00">
-            </div>
-          </div>
-          <div class="field">
-            <label class="flabel">Date <span class="opt">(optional)</span></label>
-            <input id="f-date" type="date" class="input">
-          </div>
-          <div class="field">
-            <label class="flabel">Repeat</label>
-            <div class="repeat-grid" id="repeat-grid">
-              <label class="repeat-pill selected" data-val="off">
-                <input type="radio" name="repeat" value="off" checked> Off
-              </label>
-              <label class="repeat-pill" data-val="daily">
-                <input type="radio" name="repeat" value="daily"> No limit
-              </label>
-              <label class="repeat-pill" data-val="weekly">
-                <input type="radio" name="repeat" value="weekly"> Weekly
-              </label>
-              <label class="repeat-pill" data-val="custom">
-                <input type="radio" name="repeat" value="custom"> Custom
-              </label>
-            </div>
-            <div id="custom-days" class="days-row hidden">
-              <button type="button" class="day-pill" data-day="1">Mon</button>
-              <button type="button" class="day-pill" data-day="2">Tue</button>
-              <button type="button" class="day-pill" data-day="3">Wed</button>
-              <button type="button" class="day-pill" data-day="4">Thu</button>
-              <button type="button" class="day-pill" data-day="5">Fri</button>
-              <button type="button" class="day-pill" data-day="6">Sat</button>
-              <button type="button" class="day-pill" data-day="0">Sun</button>
-            </div>
-          </div>
-          <div id="form-error" class="form-error"></div>
-          <button id="btn-add" class="btn btn-primary">Add Task</button>
-        </div>
-      </div>
-    </aside>
+					<details class="card">
+						<summary class="card-summary">
+							<span class="card-label">Blacklist</span
+							><span class="summary-icon">+</span>
+						</summary>
+						<div class="bl-form">
+							<select id="bl-type" class="input bl-select">
+								<option value="url">URL</option>
+								<option value="keyword">Keyword</option>
+							</select>
+							<input
+								id="bl-value"
+								type="text"
+								class="input bl-input"
+								placeholder="domain.com or word"
+							/>
+							<button
+								id="btn-bl-add"
+								class="btn btn-primary btn-sm"
+							>
+								Block
+							</button>
+						</div>
+						<div
+							id="bl-error"
+							class="form-error"
+							style="margin-top: 4px"
+						></div>
+						<ul id="bl-list" class="bl-list"></ul>
+					</details>
+				</aside>
 
-    <!-- RIGHT: today + calendar -->
-    <div class="right-col">
+				<!-- RIGHT col -->
+				<div class="right-col">
+					<div class="card today-card">
+						<div class="today-header">
+							<span class="card-label" style="margin-bottom: 0"
+								>Today</span
+							>
+							<button id="btn-clear-done" class="btn-link">
+								Clear completed
+							</button>
+						</div>
+						<ul id="today-list" class="today-list"></ul>
+					</div>
+					<div class="card cal-card">
+						<div class="cal-head-row">
+							<div class="cal-gutter"></div>
+							<div id="cal-day-heads" class="cal-day-heads"></div>
+						</div>
+						<div class="cal-body" id="cal-body">
+							<div class="cal-time-col" id="cal-time-col"></div>
+							<div class="cal-days-grid" id="cal-days-grid"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-      <!-- Row 1: today's tasks (1/3) -->
-      <div class="card today-card">
-        <div class="today-header">
-          <span class="card-label" style="margin-bottom:0">Today</span>
-          <button id="btn-clear-done" class="btn-link">Clear completed</button>
-        </div>
-        <ul id="today-list" class="today-list"></ul>
-      </div>
+		<!-- Delete modal -->
+		<div id="delete-modal" class="modal-overlay hidden">
+			<div class="modal">
+				<div class="modal-title">Confirm deletion</div>
+				<p class="modal-sub">
+					Type the 120 characters below exactly. Copy-paste is
+					disabled.
+				</p>
+				<div class="challenge-display" id="challenge-display"></div>
+				<div class="chal-track">
+					<div class="chal-fill" id="chal-fill"></div>
+				</div>
+				<input
+					id="challenge-input"
+					type="text"
+					class="input mono-input"
+					placeholder="Type here…"
+					autocomplete="off"
+					spellcheck="false"
+				/>
+				<div id="challenge-msg" class="challenge-msg"></div>
+				<div class="modal-actions">
+					<button id="modal-cancel" class="btn btn-ghost">
+						Cancel
+					</button>
+					<button id="modal-confirm" class="btn btn-danger" disabled>
+						Delete
+					</button>
+				</div>
+			</div>
+		</div>
 
-      <!-- Row 2: weekly calendar (2/3) -->
-      <div class="card cal-card">
-        <div class="cal-head-row">
-          <div class="cal-gutter"></div>
-          <div id="cal-day-heads" class="cal-day-heads"></div>
-        </div>
-        <div class="cal-body" id="cal-body">
-          <div class="cal-time-col" id="cal-time-col"></div>
-          <div class="cal-days-grid" id="cal-days-grid"></div>
-        </div>
-      </div>
+		<!-- URL group modal -->
+		<div id="group-modal" class="modal-overlay hidden">
+			<div class="modal modal-sm">
+				<div class="modal-title" id="group-modal-title">
+					Open task URL
+				</div>
+				<div id="group-list" class="group-list"></div>
+				<div class="modal-actions">
+					<button id="group-close" class="btn btn-ghost">
+						Close
+					</button>
+				</div>
+			</div>
+		</div>
 
-    </div>
-  </div>
-</div>
-
-<!-- Delete modal -->
-<div id="delete-modal" class="modal-overlay hidden">
-  <div class="modal">
-    <div class="modal-title">Confirm deletion</div>
-    <p class="modal-sub">Type the 120 characters below exactly. Copy-paste is disabled.</p>
-    <div class="challenge-display" id="challenge-display"></div>
-    <div class="chal-track"><div class="chal-fill" id="chal-fill"></div></div>
-    <input id="challenge-input" type="text" class="input mono-input"
-           placeholder="Type here…" autocomplete="off" spellcheck="false">
-    <div id="challenge-msg" class="challenge-msg"></div>
-    <div class="modal-actions">
-      <button id="modal-cancel" class="btn btn-ghost">Cancel</button>
-      <button id="modal-confirm" class="btn btn-danger" disabled>Delete Task</button>
-    </div>
-  </div>
-</div>
-
-<!-- Overlap group modal -->
-<div id="group-modal" class="modal-overlay hidden">
-  <div class="modal modal-sm">
-    <div class="modal-title">Multiple tasks at this time</div>
-    <div id="group-list" class="group-list"></div>
-    <div class="modal-actions">
-      <button id="group-close" class="btn btn-ghost">Close</button>
-    </div>
-  </div>
-</div>
-
-<script src="tasks.js"></script>
-</body>
+		<script src="tasks.js"></script>
+	</body>
 </html>

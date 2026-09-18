@@ -1,23 +1,22 @@
 {
   "manifest_version": 3,
   "name": "Compleit",
-  "version": "2.0",
-  "description": "Block browsing until your tasks are complete.",
+  "version": "3.0",
+  "description": "Blacklist sites and track focused work with Pomodoro.",
   "permissions": ["tabs", "storage", "scripting"],
   "host_permissions": ["<all_urls>"],
-  "chrome_url_overrides": {
-    "newtab": "tasks.html"
-  },
-  "background": {
-    "service_worker": "background.js"
-  },
+  "chrome_url_overrides": { "newtab": "tasks.html" },
+  "background": { "service_worker": "background.js" },
   "action": {
     "default_title": "Open Compleit"
   },
   "web_accessible_resources": [
     {
-      "resources": ["tasks.html", "tasks.css", "tasks.js",
-                    "blocked.html", "blocked.js", "blocked.css"],
+      "resources": [
+        "tasks.html","tasks.css","tasks.js",
+        "blocked.html","blocked.js","blocked.css",
+        "workspace.html","workspace.css","workspace.js"
+      ],
       "matches": ["<all_urls>"]
     }
   ]
